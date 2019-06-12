@@ -1,10 +1,15 @@
 clc, clear all
-disp(transform_seq("MATLA", "aa"));
+input = 'atgtctaccaccatgggaattcaacctcctaaaaagaaacgtaaagttaatactattaatattgctaaaaatgacttctcagatattgaattagcagccattccatttaatacattagcagatcactatggtgaacgtttagcacgtgaacagttagcattagaacatgaatcatatgaaatgggtgaagcacgttttcgtaagatgttcgagcgtcagttaaaagcaggtgaagttgcagataatgcagcagccaaacctttaattactacattattacctaaaatgattgctcgtattaacgattggtttgaagaggttaaagcaaagcgtggtaaacgtcctacagcatttcagttcttacaagaaatcaaacctgaagcagttgcatatattactattaaaacaacattagcatgtttaacatcagcagataatacaacagttcaagcagttgcatcagcaattggtcgtgcaattgaagatgaagcacgttttggtcgtattcgtgatttagaagccaaacattttaaaaaaaatgttgaagaacagttaaacaaacgtgttggtcatgtttataaaaaagcatttatgcaggttgttgaagcagatatgttatcaaaaggtttattaggtggtgaagcatggtcatcatggcataaagaagattcaattcatgttggtgttcgttgtattgaaatgttaattgaatcaacaggtatggtttcattacatcgtcagaatgcaggtgttgttggtcaagattcagaaacaattgaattagcacctgaatatgcagaagcaattgcaacacgtgcaggtgcattagcaggtatttcaccaatgtttcagccttgtgttgttcctcctaaaccttggacaggtattacaggtggtggttattgggcaaatggtcgtcgtcctttagcattagttcgtacacattcaaaaaaagcattaatgcgttatgaagatgtttacatgcctgaagtttataaagccattaatattgcacagaatactgcatggaaaatcaacaagaaagttttagcagttgcaaatgttattactaaatggaaacattgtcctgttgaagatattcctgcaattgaacgtgaagaattaccaatgaaacctgaagatattgatatgaatcctgaagcattaacagcatggaaacgtgcagcagcagccgtttatcgtaaagataaagcacgtaaatcacgtcgtatttcattagagttcatgttagagcaagcaaacaagttcgcaaatcataaagccatttggtttccttataatatggattggcgtggtcgtgtttatgcagtttcaatgtttaatcctcaaggtaatgatatgaccaaaggtttattaaccttagctaaaggtaaacctattggtaaagaaggttattattggttaaaaatccatggtgcaaattgtgcaggtgttgataaagttccttttccagaacgtattaagttcattgaagaaaatcatgaaaatattatggcatgtgctaaatcaccattagaaaatacatggtgggcagaacaagattcacctttttgttttttagccttttgttttgaatatgcaggtgttcaacatcatggtttatcatataattgttcattaccattagcatttgatggttcatgttcaggtattcagcatttttcagcaatgttacgtgatgaagttggtggtcgtgcagttaacttattaccttcagaaacagttcaagatatctatggtattgttgctaaaaaagttaatgaaatcttacaggcagatgccattaatggtacagataatgaagttgttacagttacagatgaaaatacaggtgaaatatcagaaaaagttaaattaggtaccaaagcattagcaggtcaatggttagcatatggtgttacacgttcagttactaagcgttcagttatgacattagcatatggttcaaaagagttcggttttcgtcaacaggttttagaagataccattcaacctgcaattgattcaggtaaaggtttaatgtttactcaacctaatcaagcagcaggttatatggccaaattaatatgggaatcagtttcagttacagttgttgcagcagttgaagcaatgaattggttaaaatcagcagccaaattattagcagcagaagttaaagataaaaaaacaggtgaaatcttacgtaagcgttgtgcagttcattgggttacacctgatggttttcctgtttggcaagaatataaaaaacctattcaaacacgtttaaacttaatgtttttaggtcagttccgtttacaacctactattaatacaaacaaagattcagaaattgatgcacataaacaagaatcaggtattgcacctaacttcgttcattcacaagatggttcacatttacgtaaaacagttgtttgggcacatgaaaaatatggtattgaatcatttgcattaattcacgattcatttggtaccattccagcagatgcagcaaacttattcaaagcagttcgtgaaacaatggttgatacatatgaatcatgtgatgttttagcagacttctatgatcagttcgcagatcagttacatgaatcacagttagataaaatgcctgcattacctgccaaaggtaacttaaacttacgtgatattttagaatcagacttcgcatttgcctaa';
 
-function new_seq = transform_seq(seq, type)
+output = transform_seq(input, "nt");
 
+disp(upper(input));
+disp(output);
+
+function new_seq = transform_seq(seq, type)  
     if type == "nt"
         seq = nt2aa(seq);
+        disp(seq)
     end
     
     if ~ischar(seq)
@@ -45,15 +50,20 @@ function new_seq = transform_seq(seq, type)
     seq_codon = [];
     for i = 1:length(seq)
         aa = lower(aminolookup(seq(i)));
+        %matlab sometimes uses END and sometimes uses * for stop codons,
+        %force it to use * at all times
+        if aa == 'end'
+            aa = '*';
+        end
         min_variance = min(variance(find(AA_ref == aa)));
         min_variance_pos = find(variance == min_variance);
 
         %it might occur that the min value also occurs somewhere else in the
         %variance array, we should take the one from the right AA
         if length(min_variance_pos) ~= 1
-            for i = 1:length(min_variance_pos)
-               if AA_ref(min_variance_pos(i)) == aa
-                  codon = Triplet_ref(min_variance_pos(i));
+            for ii = 1:length(min_variance_pos)
+               if AA_ref(min_variance_pos(ii)) == aa
+                  codon = Triplet_ref(min_variance_pos(ii));
                end
             end
         else 
@@ -61,6 +71,11 @@ function new_seq = transform_seq(seq, type)
         end
         seq_codon = [seq_codon codon];
     end
-    new_seq = strjoin(seq_codon);
+    new_seq = char(strjoin(seq_codon));
+    new_seq = new_seq(~isspace(new_seq));
+    %verify that the new sequence has the same AA sequence
+    if nt2aa(new_seq) == seq
+        disp("Optimized");
+    end
 end
 
