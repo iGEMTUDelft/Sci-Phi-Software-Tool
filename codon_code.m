@@ -3,7 +3,7 @@ clear all
 clc
 %%
 
-[~,~,Data__raw]=xlsread('/Users/osmanesen/Documents/MATLAB/data_proof.xlsx');
+[~,~,Data__raw]=xlsread('/Users/dennis/Documents/MATLAB/iGEM/Sci-Phi-Software-Tool/data_proof.xlsx');
 final_variance= zeros(1,64);
 %% phe
 A = Data__raw(1,13:end);
@@ -549,4 +549,17 @@ gly_var = var(freq_gly);
  end
 
 %%
-final_variance
+final_variance;
+final_AA = ["Phe" "Phe" "Leu" "Leu" "Leu" "Leu" "Leu" "Leu" "Ile" "Ile" "Ile" "Met" "Val" "Val" "Val" "Val" "Tyr" "Tyr" "*" "*" "*" "His" "His" "Gln" "Gln" "Asn" "Asn" "Lys" "Lys" "Asp" "Asp" "Glu" "Glu" "Ser" "Ser" "Ser" "Ser" "Ser" "Ser" "Pro" "Pro" "Pro" "Pro" "Thr" "Thr" "Thr" "Thr" "Ala" "Ala" "Ala" "Ala" "Cys" "Cys" "Trp" "Arg" "Arg" "Arg" "Arg" "Arg" "Arg" "Gly" "Gly" "Gly" "Gly"];
+final_triplet = ["TTT" "TTC" "TTA" "TTG" "CTT" "CTC" "CTA" "CTG" "ATT" "ATC" "ATA" "ATG" "GTT" "GTC" "GTA" "GTG" "TCT" "TAC" "TCA" "TCG" "TGA" "CCT" "CCC" "CCA" "CCG" "ACT" "ACC" "ACA" "ACG" "GCT" "GCC" "GCA" "GGG" "TAT" "TAC" "TAA" "TAG" "AGT" "AGC" "CAT" "CAC" "CAA" "CAG" "AAT" "AAC" "AAA" "AAG" "GAT" "GAC" "GAA" "GAG" "TGT" "TGC" "TGG" "CGT" "CGC" "CGA" "CGG" "AGA" "AGG" "GGT" "GGC" "GGA" "GGG"];
+
+seq_AA = 'MATLA';
+seq_codon = [];
+for i = 1:length(seq_AA)
+    AA = aminolookup(seq_AA(i));
+    min_variance = min(final_variance(find(final_AA == AA)));
+    codon = final_triplet(final_variance == min_variance);
+    seq_codon = [seq_codon codon];
+end
+seq_codon = strjoin(seq_codon)
+
