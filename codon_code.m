@@ -11,7 +11,7 @@ function new_seq = transform_seq(seq, type)
         seq = char(seq);
     end
 
-    [~,~,Data_raw]=xlsread('/Users/Dennis/Documents/MATLAB/Sci-Phi-Software-Tool/data_proof.xlsx');
+    [~,~,Data_raw]=xlsread([pwd '/data_proof.xlsx']);
 
     AA_ref = string(Data_raw(1,13:end));
     AA_ref(find(AA_ref == "stop")) = "*";
