@@ -3,7 +3,7 @@ clear all
 clc
 %%
 
-[~,~,Data__raw]=xlsread('/Users/dennis/Documents/MATLAB/iGEM/Sci-Phi-Software-Tool/data_proof.xlsx');
+[~,~,Data__raw]=xlsread('/Users/Dennis/Documents/MATLAB/Sci-Phi-Software-Tool/data_proof.xlsx');
 final_variance= zeros(1,64);
 %% phe
 A = Data__raw(1,13:end);
