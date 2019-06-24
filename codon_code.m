@@ -1,12 +1,28 @@
+clc, clear all
+input = 'atgGAATTCaagtttgGGTCTCACTGCAGa';
 
-input = 'gagacctatcagtgatagaggatccaaccgagcccaatataggactcagggtgccaaaaaaatgtctaccaccatgggaattcaacctcctaaaaagaaacgtaaagttaatactattaatattgctaaaaatgacttctcagatattgaattagcagccattccatttaatacattagcagatcactatggtgaacgtttagcacgtgaacagttagcattagaacatgaatcatatgaaatgggtgaagcacgttttcgtaagatgttcgagcgtcagttaaaagcaggtgaagttgcagataatgcagcagccaaacctttaattactacattattacctaaaatgattgctcgtattaacgattggtttgaagaggttaaagcaaagcgtggtaaacgtcctacagcatttcagttcttacaagaaatcaaacctgaagcagttgcatatattactattaaaacaacattagcatgtttaacatcagcagataatacaacagttcaagcagttgcatcagcaattggtcgtgcaattgaagatgaagcacgttttggtcgtattcgtgatttagaagccaaacattttaaaaaaaatgttgaagaacagttaaacaaacgtgttggtcatgtttataaaaaagcatttatgcaggttgttgaagcagatatgttatcaaaaggtttattaggtggtgaagcatggtcatcatggcataaagaagattcaattcatgttggtgttcgttgtattgaaatgttaattgaatcaacaggtatggtttcattacatcgtcagaatgcaggtgttgttggtcaagattcagaaacaattgaattagcacctgaatatgcagaagcaattgcaacacgtgcaggtgcattagcaggtatttcaccaatgtttcagccttgtgttgttcctcctaaaccttggacaggtattacaggtggtggttattgggcaaatggtcgtcgtcctttagcattagttcgtacacattcaaaaaaagcattaatgcgttatgaagatgtttacatgcctgaagtttataaagccattaatattgcacagaatactgcatggaaaatcaacaagaaagttttagcagttgcaaatgttattactaaatggaaacattgtcctgttgaagatattcctgcaattgaacgtgaagaattaccaatgaaacctgaagatattgatatgaatcctgaagcattaacagcatggaaacgtgcagcagcagccgtttatcgtaaagataaagcacgtaaatcacgtcgtatttcattagagttcatgttagagcaagcaaacaagttcgcaaatcataaagccatttggtttccttataatatggattggcgtggtcgtgtttatgcagtttcaatgtttaatcctcaaggtaatgatatgaccaaaggtttattaaccttagctaaaggtaaacctattggtaaagaaggttattattggttaaaaatccatggtgcaaattgtgcaggtgttgataaagttccttttccagaacgtattaagttcattgaagaaaatcatgaaaatattatggcatgtgctaaatcaccattagaaaatacatggtgggcagaacaagattcacctttttgttttttagccttttgttttgaatatgcaggtgttcaacatcatggtttatcatataattgttcattaccattagcatttgatggttcatgttcaggtattcagcatttttcagcaatgttacgtgatgaagttggtggtcgtgcagttaacttattaccttcagaaacagttcaagatatctatggtattgttgctaaaaaagttaatgaaatcttacaggcagatgccattaatggtacagataatgaagttgttacagttacagatgaaaatacaggtgaaatatcagaaaaagttaaattaggtaccaaagcattagcaggtcaatggttagcatatggtgttacacgttcagttactaagcgttcagttatgacattagcatatggttcaaaagagttcggttttcgtcaacaggttttagaagataccattcaacctgcaattgattcaggtaaaggtttaatgtttactcaacctaatcaagcagcaggttatatggccaaattaatatgggaatcagtttcagttacagttgttgcagcagttgaagcaatgaattggttaaaatcagcagccaaattattagcagcagaagttaaagataaaaaaacaggtgaaatcttacgtaagcgttgtgcagttcattgggttacacctgatggttttcctgtttggcaagaatataaaaaacctattcaaacacgtttaaacttaatgtttttaggtcagttccgtttacaacctactattaatacaaacaaagattcagaaattgatgcacataaacaagaatcaggtattgcacctaacttcgttcattcacaagatggttcacatttacgtaaaacagttgtttgggcacatgaaaaatatggtattgaatcatttgcattaattcacgattcatttggtaccattccagcagatgcagcaaacttattcaaagcagttcgtgaaacaatggttgatacatatgaatcatgtgatgttttagcagacttctatgatcagttcgcagatcagttacatgaatcacagttagataaaatgcctgcattacctgccaaaggtaacttaaacttacgtgatattttagaatcagacttcgcatttgcctaataaggcgcgccccaggcatcaaataaaacgaaaggctcagtcgaaagactgggcctttcgttttatctgttgtttgtcggtgaacgctctc';
-
-startpos = 62;
+startpos = 1;
 
 %propInput = oligoprop(input)
 %propOutput = oligoprop(output)
 input_CDS = upper(input(startpos:end));
 output_CDS = transform_seq(input, startpos);
+    
+if nt2aa(input_CDS) == nt2aa(output_CDS)
+    disp("Optimized")
+end
+
+input_codon = [];
+output_codon = [];
+for i = 1:length(input_CDS)
+    if mod(i,3) == 0
+        input_codon = [input_codon convertCharsToStrings([input_CDS(i-2) input_CDS(i-1) input_CDS(i)])];
+        output_codon = [output_codon convertCharsToStrings([output_CDS(i-2) output_CDS(i-1) output_CDS(i)])];
+    end
+end
+
+disp(["Codons changed: " sum(input_codon == output_codon) " Percentage: " sum(input_codon == output_codon)/length(input_codon)*100]);
+disp(["Nucleotides changed: " sum(input_CDS == output_CDS) " Percentage: " sum(input_CDS == output_CDS)/length(input_CDS)*100]);
 
 function char_seq_codon = transform_seq(input, startpos)
     
@@ -43,11 +59,15 @@ function char_seq_codon = transform_seq(input, startpos)
         
         seq_codon = [seq_codon codon_1];
     end
+
     char_seq_codon = char(strjoin(seq_codon));
     char_seq_codon = char_seq_codon(~isspace(char_seq_codon));
     
+    disp(char_seq_codon);
+    
     %now we will iterate over restriction sites and grab different codons
-    char_seq_codon = eliminate_restrictions(seq_codon, char_seq_codon, AA_ref, ordered_codons)
+    char_seq_codon = eliminate_restrictions(seq_codon, char_seq_codon, AA_ref, ordered_codons, ordered_variances);
+    
 end
 
 function [Data_raw, AA_ref, Codon_ref, AA_list, n_orgs] = process_data()
@@ -115,96 +135,189 @@ function [ordered_codons, ordered_variances] = get_ordered_list(variance, AA_ref
     end
 end
 
-function output = eliminate_restrictions(seq_codon, char_seq_codon, AA_ref, ordered_codons)
+function output = eliminate_restrictions(seq_codon, char_seq_codon, AA_ref, ordered_codons, ordered_variances)
     %now we will iterate over restriction sites and grab different codons
+    
+    %import list
+    restrictions = ["EcoRI", "G'AATTC"; "BsaI", "GGTCTC'N"; "PstI", "CTGCA'G"];
+    
     empty = false;
+    
     while ~empty
-        enzyme_list = ["CfoI"]; %TODO import enzyme list
-        for i = 1:length(enzyme_list)
-            [~, sites] = rebasecuts(char_seq_codon, {char(enzyme_list(i))});
-            for ii = 1:length(sites)
-                choice = 2;        
-                fixed = false;
-                while ~fixed
-                    if mod(sites(ii), 3) == 0 %end of codon so change either this one or the next one
-                        codon = char(seq_codon(sites(i)/3));
-                        aa = nt2aa(codon, 'AlternativeStartCodons', false);
-                        alt_codons = ordered_codons(find(AA_ref == aa));  
+        [~, restriction_pos] = rebasecuts(char_seq_codon, {char(restrictions(1, 1)), char(restrictions(2, 1)), char(restrictions(3, 1))});
+        if isempty(restriction_pos)
+            empty = true;
+        end
+        for i = 1:length(restrictions)
+            %find the restriction site
+            [~, restriction_pos] = rebasecuts(char_seq_codon, {char(restrictions(i, 1))});
+            
+            if ~isempty(restriction_pos)
 
-                        %change the codon for the next option
-                        seq_codon(sites(ii)/3) = alt_codons(choice);
+                %determine the length of the recognition site left and right of
+                %the recognition site the rebasecuts gives
+                recognition_seq = char(restrictions(i, 2));
+                length_right = length(recognition_seq) - find(recognition_seq == '''');
+                length_left = length(recognition_seq) - length_right - 1;
 
-                        char_seq_codon = char(strjoin(seq_codon));
-                        char_seq_codon = char_seq_codon(~isspace(char_seq_codon));
-
-                        [~, sites_new] = rebasecuts(char_seq_codon, {char(enzyme_list(i))});
-                        check = find(sites_new == sites(ii));
-                        if isempty(check)
-                            fixed = true;
+                for ii = 1:length(restriction_pos)
+                     
+                    if mod(restriction_pos(ii), 3) == 0 
+                        %end of codon
+                        if mod(length_right, 3) == 0
+                            span_right = length_right/3;
                         else
-                            choice = choice + 1;
-                            if choice > length(alt_codons)
-                                fixed = true;
-                                disp('Couldnt find better codon')
+                            span_right = fix(length_right/3) + 1;
+                        end 
+                        if length_left > 2
+                            length_left = length_left - 2;
+                            if mod(length_left, 3) == 0
+                                span_left = length_left/3;
+                            else
+                                span_left = fix(length_left/3) + 1;
                             end
+                        else
+                            span_left = 0;
                         end
+                        codon_start = restriction_pos(ii)/3 - span_left;
+                    elseif mod(restriction_pos(ii), 3) == 2 
+                        %middle of codon 
+                        if length_left > 1
+                            length_left = length_left - 1;
+                            if mod(length_left, 3) == 0
+                                span_left = length_left/3;
+                            else
+                                span_left = fix(length_left/3) + 1;
+                            end 
+                        else
+                            span_left = 0;
+                        end
+                        if length_right > 1
+                            length_right = length_right - 1;
+                            if mod(length_right, 3) == 0
+                                span_right = length_right/3;
+                            else
+                                span_right = fix(length_right/3) + 1;
+                            end
+                        else
+                            span_right = 0;
+                        end
+                        codon_start = restriction_pos(ii)/3 + 1/3 - span_left;
+                    elseif mod(restriction_pos(ii), 3) == 1 
+                        %beginning of codon
+                        if mod(length_left, 3) == 0
+                            span_left = length_left/3;
+                        else
+                            span_left = fix(length_left/3) + 1;
+                        end 
 
-                    elseif mod(sites(ii), 3) == 2 %middle of codon so only change this one
-                        codon = char(seq_codon(sites(ii)/3 + 1/3));
-                        aa = nt2aa(codon, 'AlternativeStartCodons', false);
-                        alt_codons = ordered_codons(find(AA_ref == aa));  
+                        if length_right > 2
+                            length_right = length_right - 2;
+                            if mod(length_right, 3) == 0
+                                span_right = length_right/3;
+                            else
+                                span_right = fix(length_right/3) + 1;
+                            end
+                        else
+                            span_right = 0;
+                        end
+                        codon_start = restriction_pos(ii)/3 - 1/3 - span_left;
+                    end
 
-                        %change the codon for the next option
-                        seq_codon(sites(ii)/3 + 1/3) = alt_codons(choice);
+                    %get all codons
+                    total_span = span_right + span_left;
+                    codons = seq_codon(codon_start:codon_start+total_span);
 
+                    %define the next best choices
+                    choices = 2.*ones(1,length(codons));
+
+                    fixed = false;
+                    while ~fixed    
+                        %get the codon we need to change and what to change it to
+                        [alt_codon, pos, cant_fix] = get_alt_codon(codons, AA_ref,  ordered_codons, ordered_variances, choices);
+
+                        seq_codon(codon_start+pos-1) = alt_codon;
                         char_seq_codon = char(strjoin(seq_codon));
                         char_seq_codon = char_seq_codon(~isspace(char_seq_codon));
 
-                        [~, sites_new] = rebasecuts(char_seq_codon, {char(enzyme_list(i))});
-                        check = find(sites_new == sites(ii));
-                        if isempty(check)
+                        [~, check] = rebasecuts(char_seq_codon, {char(restrictions(i, 1))});
+
+                        if isempty(find(check == restriction_pos(ii)))
+                            %this site is now gone
                             fixed = true;
                         else
-                            choice = choice + 1;
-                            if choice > length(alt_codons)
+                            if cant_fix == true
                                 fixed = true;
-                                disp('Couldnt find better codon')
-                            end                   
-                        end
-                    elseif mod(sites(ii), 3) == 1 %beginning of codon so either change this one or the previous one
-                        codon = char(seq_codon(sites(ii)/3 - 1/3));
-                        aa = nt2aa(codon, 'AlternativeStartCodons', false);
-                        alt_codons = ordered_codons(find(AA_ref == aa));  
-
-                        %change the codon for the next option
-                        seq_codon(sites(ii)/3 - 1/3) = alt_codons(choice);
-
-                        char_seq_codon = char(strjoin(seq_codon));
-                        char_seq_codon = char_seq_codon(~isspace(char_seq_codon));
-                        
-                        %check presence of the restriction site
-                        [~, sites_new] = rebasecuts(char_seq_codon, {char(enzyme_list(i))});
-                        check = find(sites_new == sites(ii));
-                        if isempty(check)
-                            fixed = true;
-                        else
-                            choice = choice + 1;
-                            if choice > length(alt_codons)
-                                fixed = true;
-                                disp('Couldnt find better codon')
+                                disp('Couldn''t fix it')
+                            else
+                                %not gone so change the choice of pos
+                                choices(pos) = choices(pos) + 1;
                             end
                         end
                     end
                 end
-            end
-        end
-        
-        %final check to see if nothing is left
-        [~, sites] = rebasecuts(char_seq_codon, {char(enzyme_list(i))});
-        disp(sites)
-        if isempty(sites)
-            empty = true;
+            end  
         end
     end
+    char_seq_codon = char(strjoin(seq_codon));
+    char_seq_codon = char_seq_codon(~isspace(char_seq_codon));
     output = char_seq_codon;
 end
+
+function [alt_codon, pos, cant_fix] = get_alt_codon(codons, AA_ref,  ordered_codons, ordered_variances, choices)
+    %get list of the amino acids
+    AAs = [];
+    for i = 1:length(codons)
+        AAs = [AAs nt2aa(char(codons(i)))];
+    end
+
+    %make list of delta_variance
+    counter = 0;
+    delta_variances = zeros(1, length(AAs));
+    for i = 1:length(delta_variances)
+        aa = AAs(i);
+        aa_pos = find(AA_ref == aa);
+
+        codon_variances = ordered_variances(aa_pos);
+        
+        %only calculate difference if still possible otherwise just set it
+        %at super high so it won't be considered for best option
+        if length(codon_variances) < choices(i)
+            delta_variances(i) = codon_variances(choices(i) - 1) - codon_variances(choices(i));
+        else
+            delta_variances(i) = 10^9;
+            counter = counter + 1;
+        end
+    end
+    
+    %if all of them have been put up on way too high then its not fixable
+    if counter == length(delta_variances)
+        cant_fix = true;
+    else
+        cant_fix = false;
+    end
+    
+    %get the one with the smallest difference
+    pos = find(delta_variances == min(delta_variances));
+    if length(pos) > 1
+        %get the first one if there are more
+        pos = pos(1);
+    end
+    
+    codon_to_change = codons(pos);
+    syn_codons_pos = find(AA_ref == nt2aa(char(codon_to_change))); 
+    alt_codons = ordered_codons(syn_codons_pos);
+    alt_codon = alt_codons(choices(pos));
+end
+
+
+
+
+
+
+
+
+
+
+
+
