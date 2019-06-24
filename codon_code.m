@@ -31,10 +31,10 @@ function char_seq_codon = transform_seq(input, startpos)
     AA_CDS = nt2aa(CDS, 'AlternativeStartCodons', false);
     
     %process the data
-    [Data_raw, AA_ref, Codon_ref, AA_list, n_orgs] = process_data();
+    [Data_raw_codons, AA_ref, Codon_ref, AA_list, n_orgs, restriction_data] = process_data();
     
     %make a list of preferred codons
-    variance = get_variance(Data_raw, AA_ref, AA_list, n_orgs);
+    variance = get_variance(Data_raw_codons, AA_ref, AA_list, n_orgs);
     [ordered_codons, ordered_variances] = get_ordered_list(variance, AA_ref, AA_list, Codon_ref);
     
     %restructure AA_ref (because ordering codons gives different structure)
@@ -66,20 +66,34 @@ function char_seq_codon = transform_seq(input, startpos)
     disp(char_seq_codon);
     
     %now we will iterate over restriction sites and grab different codons
-    char_seq_codon = eliminate_restrictions(seq_codon, char_seq_codon, AA_ref, ordered_codons, ordered_variances);
+    char_seq_codon = eliminate_restrictions(seq_codon, char_seq_codon, AA_ref, ordered_codons, ordered_variances, restriction_data);
     
 end
 
-function [Data_raw, AA_ref, Codon_ref, AA_list, n_orgs] = process_data()
+function [Data_raw_codons, AA_ref, Codon_ref, AA_list, n_orgs, restriction_data] = process_data()
     %import data
-    [~,~,Data_raw]=xlsread([pwd '/data_proof.xlsx']);
+    [~,~,Data_raw_codons]=xlsread([pwd '/data_proof.xlsx']);
+    [~,~,restriction_data_raw]=xlsread([pwd '/restriction_enzyme_database.xlsx']);
+    fileID = fopen('restriction_sites.txt');
+    textfile = textscan(fileID,'%q');
+    fclose(fileID);
+    
+    textfile = strsplit(string(textfile), ',');
+    
+    Restriction_Ref = string(restriction_data_raw(2:end,1));
+    restriction_data = [];
+    for i = 1:length(textfile)
+        restriction_data = [restriction_data restriction_data_raw(find(Restriction_Ref == textfile(i)) + 1, 3)];
+    end
+    
+    restriction_data = [textfile' restriction_data'];
     
     %make reference lists
-    AA_ref = string(Data_raw(1,13:end));
+    AA_ref = string(Data_raw_codons(1,13:end));
     AA_ref(find(AA_ref == "stop")) = "*";
-    Codon_ref = string(Data_raw(2,13:end));
+    Codon_ref = string(Data_raw_codons(2,13:end));
     AA_list = ["phe" "leu" "ile" "met" "val" "tyr" "*" "his" "gln" "asn" "lys" "asp" "glu" "ser" "pro" "thr" "ala" "cys" "trp" "arg" "gly"];
-    n_orgs = length(Data_raw(3:end,1));
+    n_orgs = length(Data_raw_codons(3:end,1));
 end
 
 function variance = get_variance(Data_raw, AA_ref, AA_list, n_orgs)
@@ -135,17 +149,22 @@ function [ordered_codons, ordered_variances] = get_ordered_list(variance, AA_ref
     end
 end
 
-function output = eliminate_restrictions(seq_codon, char_seq_codon, AA_ref, ordered_codons, ordered_variances)
+function output = eliminate_restrictions(seq_codon, char_seq_codon, AA_ref, ordered_codons, ordered_variances, restrictions)
     %now we will iterate over restriction sites and grab different codons
-    
-    %import list
-    restrictions = ["EcoRI", "G'AATTC"; "BsaI", "GGTCTC'N"; "PstI", "CTGCA'G"];
     
     empty = false;
     
     while ~empty
-        [~, restriction_pos] = rebasecuts(char_seq_codon, {char(restrictions(1, 1)), char(restrictions(2, 1)), char(restrictions(3, 1))});
-        if isempty(restriction_pos)
+        %see if its truly empty of restriction sites, this is the best way my tired mind could
+        %think of for now..
+        c = 0;
+        for j = 1:length(restrictions(1,:))
+            [~, restriction_pos] = rebasecuts(char_seq_codon, {char(restrictions(j, 1))});
+            if ~isempty(restriction_pos)
+                c = c+1;
+            end
+        end
+        if c == 0
             empty = true;
         end
         for i = 1:length(restrictions)
