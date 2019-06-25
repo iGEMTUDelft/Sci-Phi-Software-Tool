@@ -1,1 +1,1 @@
-EcoRI,BsaI,PstI,NotI
+EcoRI,XbaI,SpeI,NotI,PstI,BsmI,BmgBI,BglII,BbsI,BsaI

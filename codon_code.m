@@ -1,15 +1,25 @@
 clc, clear all
-input = 'atgGAATTCaagtttgGGTCTCACTGCAGa';
+tic
+input = 'ATGGAGCTTTTCACTGGCGTTGTTCCCATCCTGGTCGAGCTGGACGGCGACGTAAACGGCCACAAGTTCAGCGTGTCCGGCGAGGGCGAGGGCGATGCCACCTACGGCAAGCTGACCCTGAAGTTCATCTGCACCACCGGCAAGCTGCCCGTGCCCTGGCCCACCCTCGTGACCACCCTGACCTACGGCGTGCAGTGCTTCAGCCGCTACCCCGACCACATGAAGCAGCACGACTTCTTCAAGTCCGCCATGCCCGAAGGCTACGTCCAGGAGCGCACCATCTTCTTCAAGGACGACGGCAACTACAAGACCCGCGCCGAGGTGAAGTTCGAGGGCGACACCCTGGTGAACCGCATCGAGCTGAAGGGCATCGACTTCAAGGAGGACGGCAACATCCTGGGGCACAAGCTGGAGTACAACTACAACAGCCACAACGTCTATATCATGGCCGACAAGCAGAAGAACGGCATCAAGGTGAACTTCAAGATCCGCCACAACATCGAGGACGGCAGCGTGCAGCTCGCCGACCACTACCAGCAGAACACCCCCATCGGCGACGGCCCCGTGCTGCTGCCCGACAACCACTACCTGAGCACCCAGTCCGCCCTGAGCAAAGACCCCAACGAGAAGCGCGATCACATGGTCCTGCTGGAGTTCGTGACCGCCGCCGGGATCTAA';
 
 startpos = 1;
 
-%propInput = oligoprop(input)
-%propOutput = oligoprop(output)
 input_CDS = upper(input(startpos:end));
 output_CDS = transform_seq(input, startpos);
-    
+%propInput = oligoprop(input_CDS)
+%propOutput = oligoprop(output_CDS)
+
 if nt2aa(input_CDS) == nt2aa(output_CDS)
     disp("Optimized")
+    r_fold_input = rnafold(input_CDS);
+    r_fold_output = rnafold(output_CDS);
+
+    rnaplot(r_fold_input, 'seq', input_CDS, 'format', 'dot');
+    title('Input')
+
+    rnaplot(r_fold_output, 'seq', output_CDS, 'format', 'dot');
+    title('Output')
+    toc
 end
 
 input_codon = [];
@@ -158,7 +168,8 @@ function output = eliminate_restrictions(seq_codon, char_seq_codon, AA_ref, orde
         %see if its truly empty of restriction sites, this is the best way my tired mind could
         %think of for now..
         c = 0;
-        for j = 1:length(restrictions(1,:))
+        
+        for j = 1:length(restrictions(:,1))
             [~, restriction_pos] = rebasecuts(char_seq_codon, {char(restrictions(j, 1))});
             if ~isempty(restriction_pos)
                 c = c+1;
@@ -167,7 +178,7 @@ function output = eliminate_restrictions(seq_codon, char_seq_codon, AA_ref, orde
         if c == 0
             empty = true;
         end
-        for i = 1:length(restrictions)
+        for i = 1:length(restrictions(:,1))
             %find the restriction site
             [~, restriction_pos] = rebasecuts(char_seq_codon, {char(restrictions(i, 1))});
             
