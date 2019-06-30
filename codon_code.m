@@ -3,24 +3,24 @@ tic
 input = 'ttatgaacctgattcacattttaactgtttctccaaaccgcaaatgattaattctaaaccaaataaaaatgcaggttctgcaccttgatgatcaaataattcaattgcttgacgtaataaaggaggcattgaatctgttgtaggtgtttctctttcctccttggcaacttgatgttcttgatcttctaaaacacaacctaaggtaaaatgaccaactgctgataatgcatataatgcgttttctaatgaaaaaccttgttgacataagaatgctaactgattttctaatgtttcatattgtttttctgtaggacgtgtacctaagtgaactttggcaccatctctatgtgataataatgcacaacgaaatgatttggcattgttacgtaagaagtcttgccatgattctccttctaatggacaaaaatgtgtatgatgtctatctaacatttcgattgctaatgcatctaataatgcacgtttgtttttaacatgccaatataatgtaggttgttcaacacctaatttctgtgctaatttacgtgtagttaaaccttcgataccaacttcatttaataattctaatgctgagttaataacttttgatttatctaaacgtgaaactttacgtttttttttaggaggatagatctccatggtggtagacat';
 
 startpos = 1;
-
+ 
 input_CDS = upper(input(startpos:end));
 output_CDS = transform_seq(input, startpos);
 %propInput = oligoprop(input_CDS)
 %propOutput = oligoprop(output_CDS)
 
-if nt2aa(input_CDS) == nt2aa(output_CDS)
-    disp("Optimized")
-    [r_fold_input, input_energy] = rnafold(input_CDS);
-    [r_fold_output, output_energy] = rnafold(output_CDS);
-
-    rnaplot(r_fold_input, 'seq', input_CDS, 'format', 'dot');
-    title('Input')
-
-    rnaplot(r_fold_output, 'seq', output_CDS, 'format', 'dot');
-    title('Output')
-    toc/60
-end
+% if nt2aa(input_CDS) == nt2aa(output_CDS)
+%     disp("Optimized")
+%     [r_fold_input, input_energy] = rnafold(input_CDS);
+%     [r_fold_output, output_energy] = rnafold(output_CDS);
+% 
+%     rnaplot(r_fold_input, 'seq', input_CDS, 'format', 'dot');
+%     title('Input')
+% 
+%     rnaplot(r_fold_output, 'seq', output_CDS, 'format', 'dot');
+%     title('Output')
+%     toc/60
+% end
 
 input_codon = [];
 output_codon = [];
@@ -77,7 +77,6 @@ function char_seq_codon = transform_seq(input, startpos)
     
     %now we will iterate over restriction sites and grab different codons
     char_seq_codon = eliminate_restrictions(seq_codon, char_seq_codon, AA_ref, ordered_codons, ordered_variances, restriction_data);
-    
 end
 
 function [Data_raw_codons, AA_ref, Codon_ref, AA_list, n_orgs, restriction_data] = process_data()
