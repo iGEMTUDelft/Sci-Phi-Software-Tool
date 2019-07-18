@@ -1,28 +1,14 @@
 clc, clear all
 tic
-input = 'atgtctaccaccatgggaattcaacctcctaaaaagaaacgtaaagttaatactattaatattgctaaaaatgacttctcagatattgaattagcagccattccatttaatacattagcagatcactatggtgaacgtttagcacgtgaacagttagcattagaacatgaatcatatgaaatgggtgaagcacgttttcgtaagatgttcgagcgtcagttaaaagcaggtgaagttgcagataatgcagcagccaaacctttaattactacattattacctaaaatgattgctcgtattaacgattggtttgaagaggttaaagcaaagcgtggtaaacgtcctacagcatttcagttcttacaagaaatcaaacctgaagcagttgcatatattactattaaaacaacattagcatgtttaacatcagcagataatacaacagttcaagcagttgcatcagcaattggtcgtgcaattgaagatgaagcacgttttggtcgtattcgtgatttagaagccaaacattttaaaaaaaatgttgaagaacagttaaacaaacgtgttggtcatgtttataaaaaagcatttatgcaggttgttgaagcagatatgttatcaaaaggtttattaggtggtgaagcatggtcatcatggcataaagaagattcaattcatgttggtgttcgttgtattgaaatgttaattgaatcaacaggtatggtttcattacatcgtcagaatgcaggtgttgttggtcaagattcagaaacaattgaattagcacctgaatatgcagaagcaattgcaacacgtgcaggtgcattagcaggtatttcaccaatgtttcagccttgtgttgttcctcctaaaccttggacaggtattacaggtggtggttattgggcaaatggtcgtcgtcctttagcattagttcgtacacattcaaaaaaagcattaatgcgttatgaagatgtttacatgcctgaagtttataaagccattaatattgcacagaatactgcatggaaaatcaacaagaaagttttagcagttgcaaatgttattactaaatggaaacattgtcctgttgaagatattcctgcaattgaacgtgaagaattaccaatgaaacctgaagatattgatatgaatcctgaagcattaacagcatggaaacgtgcagcagcagccgtttatcgtaaagataaagcacgtaaatcacgtcgtatttcattagagttcatgttagagcaagcaaacaagttcgcaaatcataaagccatttggtttccttataatatggattggcgtggtcgtgtttatgcagtttcaatgtttaatcctcaaggtaatgatatgaccaaaggtttattaaccttagctaaaggtaaacctattggtaaagaaggttattattggttaaaaatccatggtgcaaattgtgcaggtgttgataaagttccttttccagaacgtattaagttcattgaagaaaatcatgaaaatattatggcatgtgctaaatcaccattagaaaatacatggtgggcagaacaagattcacctttttgttttttagccttttgttttgaatatgcaggtgttcaacatcatggtttatcatataattgttcattaccattagcatttgatggttcatgttcaggtattcagcatttttcagcaatgttacgtgatgaagttggtggtcgtgcagttaacttattaccttcagaaacagttcaagatatctatggtattgttgctaaaaaagttaatgaaatcttacaggcagatgccattaatggtacagataatgaagttgttacagttacagatgaaaatacaggtgaaatatcagaaaaagttaaattaggtaccaaagcattagcaggtcaatggttagcatatggtgttacacgttcagttactaagcgttcagttatgacattagcatatggttcaaaagagttcggttttcgtcaacaggttttagaagataccattcaacctgcaattgattcaggtaaaggtttaatgtttactcaacctaatcaagcagcaggttatatggccaaattaatatgggaatcagtttcagttacagttgttgcagcagttgaagcaatgaattggttaaaatcagcagccaaattattagcagcagaagttaaagataaaaaaacaggtgaaatcttacgtaagcgttgtgcagttcattgggttacacctgatggttttcctgtttggcaagaatataaaaaacctattcaaacacgtttaaacttaatgtttttaggtcagttccgtttacaacctactattaatacaaacaaagattcagaaattgatgcacataaacaagaatcaggtattgcacctaacttcgttcattcacaagatggttcacatttacgtaaaacagttgtttgggcacatgaaaaatatggtattgaatcatttgcattaattcacgattcatttggtaccattccagcagatgcagcaaacttattcaaagcagttcgtgaaacaatggttgatacatatgaatcatgtgatgttttagcagacttctatgatcagttcgcagatcagttacatgaatcacagttagataaaatgcctgcattacctgccaaaggtaacttaaacttacgtgatattttagaatcagacttcgcatttgcctaa';
+input = 'ATGCCGCGTAAAATGTACAGCTGCGATTTTGAAACGACGACGAAAGTTGAAGATTGCCGTGTCTGGGCCTATGGTTATATGAACATCGAAGACCATTCAGAATATAAAATTGGCAACTCGCTGGATGAATTTATGGCGTGGGTGCTGAAAGTTCAGGCCGACCTGTACTTCCACAATCTGAAATTTGATGGTGCGTTCATTATCAACTGGCTGGAACGTAATGGCTTTAAATGGAGCGCCGATGGTCTGCCGAACACCTATAATACGATTATCTCTCGTATGGGCCAATGGTATATGATTGATATCTGCCTGGGCTACAAAGGTAAACGCAAAATTCATACCGTGATCTATGACAGCCTGAAAAAACTGCCGTTTCCGGTGAAGAAAATTGCGAAAGATTTCAAACTGACCGTCCTGAAAGGCGATATTGACTATCACAAAGAACGTCCGGTTGGTTACAAAATCACGCCGGAAGAATATGCGTACATTAAAAACGATATCCAGATTATCGCAGAAGCTCTGCTGATTCAGTTTAAACAAGGCCTGGATCGCATGACCGCCGGCAGTGACTCCCTGAAAGGTTTCAAAGATATCATCACCACGAAAAAATTTAAGAAAGTGTTCCCGACCCTGAGCCTGGGTCTGGATAAAGAAGTTCGTTATGCATACCGCGGCGGTTTTACGTGGCTGAACGACCGTTTCAAAGAAAAAGAAATTGGCGAGGGTATGGTCTTTGATGTGAATAGTCTGTATCCGGCTCAGATGTACTCCCGCCTGCTGCCGTATGGCGAACCGATCGTTTTCGAGGGTAAATATGTCTGGGATGAAGACTACCCGCTGCATATTCAGCACATCCGTTGTGAATTTGAACTGAAAGAAGGCTATATTCCGACCATTCAAATCAAACGTAGCCGCTTCTATAAGGGTAACGAATACCTGAAAAGCTCTGGCGGTGAAATCGCAGACCTGTGGCTGAGTAACGTCGATCTGGAACTGATGAAAGAACATTACGATCTGTACAACGTTGAATACATCTCCGGCCTGAAATTTAAAGCCACCACGGGTCTGTTTAAAGATTTCATTGACAAATGGACCTACATCAAAACCACGTCTGAAGGTGCAATCAAACAGCTGGCTAAACTGATGCTGAACAGCCTGTATGGCAAATTTGCATCTAATCCGGATGTTACCGGTAAAGTCCCGTACCTGAAAGAAAATGGCGCTCTGGGTTTTCGCCTGGGCGAAGAAGAAACCAAAGATCCGGTGTATACGCCGATGGGTGTTTTCATTACCGCGTGGGCACGTTACACCACCATCACCGCCGCACAAGCGTGCTATGACCGCATTATCTACTGTGATACCGACTCAATTCATCTGACCGGCACGGAAATCCCGGATGTGATTAAAGATATCGTTGACCCGAAAAAACTGGGTTATTGGGCACACGAATCGACCTTTAAACGTGCTAAATACCTGCGCCAGAAAACGTACATCCAAGACATCTACATGAAAGAAGTCGATGGCAAACTGGTGGAAGGTTCACCGGATGACTATACCGACATTAAATTTTCGGTGAAATGCGCCGGCATGACCGATAAAATTAAGAAAGAAGTGACGTTCGAAAATTTCAAAGTGGGTTTCAGTCGCAAAATGAAACCGAAACCGGTCCAAGTTCCGGGCGGCGTTGTGCTGGTCGATGACACCTTCACGATCAAATAA';
 
 startpos = 1;
  
 input_CDS = upper(input(startpos:end));
 output_CDS = transform_seq(input, startpos);
-%propInput = oligoprop(input_CDS)
-%propOutput = oligoprop(output_CDS)
 
-% if nt2aa(input_CDS) == nt2aa(output_CDS)
-%     disp("Optimized")
-%     [r_fold_input, input_energy] = rnafold(input_CDS);
-%     [r_fold_output, output_energy] = rnafold(output_CDS);
-% 
-%     rnaplot(r_fold_input, 'seq', input_CDS, 'format', 'dot');
-%     title('Input')
-% 
-%     rnaplot(r_fold_output, 'seq', output_CDS, 'format', 'dot');
-%     title('Output')
-%     toc/60
-% end
 if nt2aa(input_CDS) == nt2aa(output_CDS)
-    disp("Workes")
+    disp("Optimized")
 end
 input_codon = [];
 output_codon = [];
@@ -51,7 +37,7 @@ function char_seq_codon = transform_seq(input, startpos)
     [Data_raw_codons, AA_ref, Codon_ref, AA_list, n_orgs, restriction_data] = process_data();
     
     %make a list of preferred codons
-    [variances AA_ref_new, Codon_ref_new] = get_variance(Data_raw_codons, AA_ref, AA_list, n_orgs, Codon_ref);
+    [variances AA_ref_new, Codon_ref_new] = get_variance(Data_raw_codons, AA_ref, AA_list, n_orgs, Codon_ref)
     [ordered_codons, ordered_variances] = get_ordered_list(variances, AA_ref, AA_list, Codon_ref, Codon_ref_new);
     
     %make initial optimized sequence
@@ -230,7 +216,7 @@ function output = eliminate_restrictions(seq_codon, char_seq_codon, Codon_ref_ne
         for j = 1:length(restrictions(:,1))
             [~, restriction_pos] = rebasecuts(char_seq_codon, {char(restrictions(j, 1))});
             
-            disp(restrictions(j, 1));
+            disp(char(restrictions(j, 1)))
             disp(restriction_pos)
             if ~isempty(restriction_pos)
                 c = c+1;
@@ -318,11 +304,13 @@ function output = eliminate_restrictions(seq_codon, char_seq_codon, Codon_ref_ne
                         %get all codons
                         total_span = span_right + span_left;
                         codons = seq_codon(codon_start:codon_start+total_span);
-
+                        
                         %define the next best choices
                         choices = 2.*ones(1,length(codons));
                         consider = true(1,length(codons));
-
+                        
+                        choices(find(codons == 'ATG')) = 1;
+                        
                         fixed = false;
                         while ~fixed    
                             %get the codon we need to change and what to change it to
@@ -351,6 +339,7 @@ function output = eliminate_restrictions(seq_codon, char_seq_codon, Codon_ref_ne
                                             fixed = true; %can't fix it so let go of loop
                                         else
                                             choices = choices + 1;
+                                            choices(find(codons == 'ATG')) = 1;
                                             consider = true(1,length(codons));
                                         end
                                     end
@@ -377,16 +366,17 @@ function [alt_codon, pos, cant_fix] = get_alt_codon(codons, Codon_ref_new, order
             codon_pos = find(Codon_ref_new(1,:) == codon);
 
             codon_variances = ordered_variances(codon_pos);
-        
+
             %only calculate difference if still possible otherwise just set it
             %at super high so it won't be considered for best option      
-            if length(codon_variances) > choices(i)
+            if length(codon_variances) > choices(i) 
                 delta_variances(i) = codon_variances(choices(i) - 1) - codon_variances(choices(i));
             else
                 delta_variances(i) = 10^9;
-                counter = counter + 1;
+                choices(i) = length(codon_variances);
             end
         else
+            %just make a super large value so it won't be considered
             delta_variances(i) = 10^10;
         end
     end
@@ -400,6 +390,7 @@ function [alt_codon, pos, cant_fix] = get_alt_codon(codons, Codon_ref_new, order
     
     %get the one with the smallest difference
     pos = find(delta_variances == min(delta_variances));
+    
     if length(pos) > 1
         %get the first one if there are more
         pos = pos(1);
