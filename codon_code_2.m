@@ -10,6 +10,7 @@ output_CDS = transform_seq(input, startpos);
 if nt2aa(input_CDS) == nt2aa(output_CDS)
     disp("Optimized")
 end
+
 input_codon = [];
 output_codon = [];
 for i = 1:length(input_CDS)
@@ -37,7 +38,7 @@ function char_seq_codon = transform_seq(input, startpos)
     [Data_raw_codons, AA_ref, Codon_ref, AA_list, n_orgs, restriction_data] = process_data();
     
     %make a list of preferred codons
-    [variances AA_ref_new, Codon_ref_new] = get_variance(Data_raw_codons, AA_ref, AA_list, n_orgs, Codon_ref)
+    [variances AA_ref_new, Codon_ref_new] = get_variance(Data_raw_codons, AA_ref, AA_list, n_orgs, Codon_ref);
     [ordered_codons, ordered_variances] = get_ordered_list(variances, AA_ref, AA_list, Codon_ref, Codon_ref_new);
     
     %make initial optimized sequence
@@ -55,7 +56,7 @@ function char_seq_codon = transform_seq(input, startpos)
     char_seq_codon = char_seq_codon(~isspace(char_seq_codon))
     
     disp(char_seq_codon);
-    
+     
     %now we will iterate over restriction sites and grab different codons
     char_seq_codon = eliminate_restrictions(seq_codon, char_seq_codon, Codon_ref_new, ordered_codons, ordered_variances, restriction_data);
 end
@@ -99,7 +100,7 @@ end
 
 function [variances, AA_ref_new, Codon_ref_new] = get_variance(Data_raw_codons, AA_ref, AA_list, n_orgs, Codon_ref)
         
-    %get the data
+    %get the data for frequency
     freqs = zeros(n_orgs, length(AA_ref));
     for i = 1:n_orgs
         data = Data_raw_codons(2+i,13:end); 
@@ -119,7 +120,7 @@ function [variances, AA_ref_new, Codon_ref_new] = get_variance(Data_raw_codons, 
        for ii = 1:N
            freq_aa(ii,:)=freq_aa(ii,:)./sum_rows_aa(ii,1);
        end
-       percentage = [percentage freq_aa];
+       percentage = [percentage freq_aa]
     end
 
     %find the length of the new reference lists
