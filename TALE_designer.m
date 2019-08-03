@@ -73,13 +73,12 @@ function TALE_nt = TALE_designer(target_recog)
                 relative_pos = find(AA_ref == lower(aminolookup(RVD_AA(j))));
                 reference_pos = find(Codon_ref_new(1,:) == reference_RVD_codons(j));
 
-                pos = relative_pos+reference_pos(1);
+                pos = relative_pos+reference_pos(1)-1;
 
                 diff = differences(pos);
 
                 alt_pos = pos(find(diff == min(diff)));
-                RVD_codons(j) = Codon_ref_new(2,alt_pos);
-
+                RVD_codons(j) = Codon_ref_new(2,alt_pos(1));
             end
         end
         RVD_nt = char(strjoin(RVD_codons));
