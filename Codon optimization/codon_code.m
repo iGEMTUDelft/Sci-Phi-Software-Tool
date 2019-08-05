@@ -7,7 +7,7 @@ startpos = 1;
 input_CDS = upper(input(startpos:end));
 output_CDS = transform_seq(input, startpos);
 
-if nt2aa(input_CDS) == nt2aa(output_CDS)
+if nt2aa(input_CDS,'AlternativeStartCodons', false) == nt2aa(output_CDS,'AlternativeStartCodons', false)
     disp("Optimized")
 end
 
@@ -40,7 +40,7 @@ function char_seq_codon = transform_seq(input, startpos)
     %make a list of preferred codons
     [variances AA_ref_new, Codon_ref_new] = get_variance(Data_raw_codons, AA_ref, AA_list, n_orgs, Codon_ref);
     [ordered_codons, ordered_variances] = get_ordered_list(variances, AA_ref, AA_list, Codon_ref, Codon_ref_new);
-    
+    Codon_ref_new
     %make initial optimized sequence
     seq_codon = [];
     for i = 1:length(CDS_codons)
@@ -187,6 +187,9 @@ function [ordered_codons, ordered_variances] = get_ordered_list(variances, ~, ~,
     for i = 1:length(Codon_ref)
         %get the positions of this codon
         codon = Codon_ref(i);
+        if codon == 'TTG'
+            disp(find(Codon_ref_new(1,:) == codon))
+        end
         codon_pos = find(Codon_ref_new(1,:) == codon);
 
         %get the list of synonymous codons and the variances

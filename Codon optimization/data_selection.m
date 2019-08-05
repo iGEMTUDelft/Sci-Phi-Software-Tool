@@ -30,7 +30,7 @@ end
 top_row = [];
 for i = 1:76
     if i >= 13
-        top_row = [top_row aminolookup(nt2aa(Data_raw(1,i)))];
+        top_row = [top_row aminolookup(nt2aa(Data_raw(1,i), 'AlternativeStartCodons', false))];
     end
 end
 top_row = cellstr(top_row);
