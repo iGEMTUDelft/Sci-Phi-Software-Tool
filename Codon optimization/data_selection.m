@@ -4,9 +4,10 @@ clc
 %%
 tic
 [~,~,Data_raw]=xlsread([pwd '/o576245-Refseq_species.xlsx']);
-[~,~,Organisms]=xlsread([pwd '/organisms.xlsx']);
 
 %%
+[~,~,Organisms]=xlsread([pwd '/organisms.xlsx']);
+
 Taxids = Data_raw(2:end,3);
 Taxids= cell2mat(Taxids);
 Organisms = cell2mat(Organisms);
@@ -43,4 +44,24 @@ combined = cellstr(combined);
 
 combined=cell2table(combined);
 writetable(combined,'data_formatted.xlsx')
+
+%%
+%make GC table
+GC_data_per_organism = [];
+for i = 1:length(Organisms)
+    pos = find(Taxids == Organisms(i));
+    
+    %get average if multiple
+    if length(pos) > 1
+        all = cell2mat(Data_raw(pos+2,9));
+        average = sum(all,1)./length(pos);
+        GC_data_per_organism = [GC_data_per_organism; average]
+    else
+        GC_data_per_organism = [GC_data_per_organism; cell2mat(Data_raw(pos+2,13:end))]
+    end 
+end
+combined = [Organisms GC_data_per_organism];
+combined = num2cell(combined);
+combined = cell2table(combined);
+writetable(combined, 'GC_content.xlsx');
 toc
