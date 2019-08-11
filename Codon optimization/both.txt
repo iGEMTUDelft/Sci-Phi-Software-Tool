@@ -1,0 +1,1 @@
+BpiI,BsaI,SapI,BsmBI,EcoRI,XbaI,SpeI,PstI,NotI
