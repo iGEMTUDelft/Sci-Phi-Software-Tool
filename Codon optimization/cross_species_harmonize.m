@@ -240,7 +240,7 @@ function cross_species_harmonized = cross_species_harmonize(input,RFC,TypeIIs, f
                 restriction_pos_old = all_pos;
             else
                 if ~isempty(restriction_pos_old)
-                    disp('This sequence couldn not be solved.');
+                    disp('This sequence could not be solved.');
                      empty = true;
                 end              
             end
@@ -251,6 +251,7 @@ function cross_species_harmonized = cross_species_harmonize(input,RFC,TypeIIs, f
             
             for i = 1:length(restrictions(:,1))
                 %find the restriction site
+                i
                 [~, restriction_pos] = rebasecuts(char_seq_codon, {char(restrictions(i, 1))});
                 cant_fix_restr_pos = false(1, length(restriction_pos));
                 if ~isempty(restriction_pos)
@@ -327,6 +328,9 @@ function cross_species_harmonized = cross_species_harmonize(input,RFC,TypeIIs, f
 
                             %get all codons
                             total_span = span_right + span_left;
+                            codon_start = uint8(codon_start);
+                            total_span = uint8(total_span);
+
                             codons = seq_codon(codon_start:codon_start+total_span);
 
                             %define the next best choices
@@ -343,7 +347,7 @@ function cross_species_harmonized = cross_species_harmonize(input,RFC,TypeIIs, f
                                 seq_codon(codon_start+pos-1) = alt_codon;
                                 char_seq_codon = char(strjoin(seq_codon));
                                 char_seq_codon = char_seq_codon(~isspace(char_seq_codon));
-
+                                disp(i)
                                 [~, check] = rebasecuts(char_seq_codon, {char(restrictions(i, 1))});
 
                                 if isempty(find(check == restriction_pos(ii)))
@@ -384,24 +388,24 @@ function cross_species_harmonized = cross_species_harmonize(input,RFC,TypeIIs, f
         %make list of delta_variance
         counter = 0;
         delta_variances = zeros(1, length(codons(1,:)));
-        for i = 1:length(delta_variances)
-            if consider(i)
-                codon = codons(i);
+        for j = 1:length(delta_variances)
+            if consider(j)
+                codon = codons(j);
                 codon_pos = find(Codon_ref_new(1,:) == codon);
 
                 codon_variances = ordered_variances(codon_pos);
 
                 %only calculate difference if still possible otherwise just set it
                 %at super high so it won't be considered for best option      
-                if length(codon_variances) > choices(i) 
-                    delta_variances(i) = codon_variances(choices(i) - 1) - codon_variances(choices(i));
+                if length(codon_variances) > choices(j) 
+                    delta_variances(j) = codon_variances(choices(j) - 1) - codon_variances(choices(j));
                 else
-                    delta_variances(i) = 10^9;
-                    choices(i) = length(codon_variances);
+                    delta_variances(j) = 10^9;
+                    choices(j) = length(codon_variances);
                 end
             else
                 %just make a super large value so it won't be considered
-                delta_variances(i) = 10^10;
+                delta_variances(j) = 10^10;
             end
         end
 

@@ -16,14 +16,14 @@ function cross_species_harmonized = cross_species_harmonize(input,RFC,TypeIIs, f
     output_codon = [];
     for i = 1:length(input_CDS)
         if mod(i,3) == 0
-            input_codon = [input_codon uconvertCharsToStrings([input_CDS(i-2) input_CDS(i-1) input_CDS(i)])];
+            input_codon = [input_codon upper(convertCharsToStrings([input_CDS(i-2) input_CDS(i-1) input_CDS(i)]))];
             output_codon = [output_codon convertCharsToStrings([cross_species_harmonized(i-2) cross_species_harmonized(i-1) cross_species_harmonized(i)])];
         end
     end
-    input_codon
-    output_codon
-    disp(["Codons changed: " sum(input_codon == output_codon) " Percentage: " sum(input_codon == output_codon)/length(input_codon)*100]);
-    disp(["Nucleotides changed: " sum(input_CDS == cross_species_harmonized) " Percentage: " sum(input_CDS == cross_species_harmonized)/length(input_CDS)*100]);
+    input_CDS = upper(input_CDS);
+    cross_species_harmonized
+    disp(["Codons changed: " length(input_codon) - sum(input_codon == output_codon) " Percentage changed: " 100 - sum(input_codon == output_codon)/length(input_codon)*100]);
+    disp(["Nucleotides changed: " length(input_CDS) - sum(input_CDS == cross_species_harmonized) " Percentage changed: " 100 - sum(input_CDS == cross_species_harmonized)/length(input_CDS)*100]);
 
     function char_seq_codon = transform_seq(input, startpos)
 
@@ -61,10 +61,6 @@ function cross_species_harmonized = cross_species_harmonize(input,RFC,TypeIIs, f
 
         %now we will iterate over restriction sites and grab different codons
         char_seq_codon = eliminate_restrictions(seq_codon, char_seq_codon, Codon_ref_new, ordered_codons, ordered_variances, restriction_data);
-    end
-
-    function GC_Content_orgs = get_GC_content()
-
     end
 
     function [Data_raw_codons, AA_ref, Codon_ref, AA_list, n_orgs, restriction_data] = process_data()
@@ -240,11 +236,13 @@ function cross_species_harmonized = cross_species_harmonize(input,RFC,TypeIIs, f
                     all_pos = [all_pos restriction_pos];                
                 end
             end
-            if ~isequal(restriction_pos_old,all_pos)
+            if ~isequal(restriction_pos_old,all_pos) 
                 restriction_pos_old = all_pos;
             else
-                disp('This sequence couldn not be solved.');
-                empty = true;
+                if ~isempty(restriction_pos_old)
+                    disp('This sequence could not be solved.');
+                     empty = true;
+                end              
             end
             
             if c == 0
